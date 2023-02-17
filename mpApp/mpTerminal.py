@@ -14,7 +14,7 @@ class Terminal(MpProcess):
 
     def run(self):
         self._pipes={}
-        for m in self.mpConfig.modules.keys():
+        for m in self._mpConfig.modules.keys():
             self._pipes[m] = getattr(self._manager,'%s_out'%m).__call__()
         while 1:
             gotsomething=False

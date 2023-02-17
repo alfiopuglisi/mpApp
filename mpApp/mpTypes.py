@@ -8,9 +8,12 @@ import numpy as np
 
 
 class MpStructure(ctypes.Structure):
-
+    '''
+    Uses np.ctypeslib to convert any ndarray get/set
+    into a ctypes.Array.
+    '''
     def __setattr__(self, name, value):
-        if isinstance( value, np.ndarray):
+        if isinstance(value, np.ndarray):
             value = np.ctypeslib.as_ctypes(value)
         ctypes.Structure.__setattr__(self, name, value)
 
@@ -28,14 +31,13 @@ class SharedBuf():
     Buffers are described with an MpStructure-derived class,
     which works like ctypes.Structure
     '''
-
-    def __init__( self, desc):
+    def __init__(self, desc):
         '''
         <desc> is a class or instance derived from MpStructure
         '''
         self._desc = desc
         self._size = ctypes.sizeof(desc)
-        self._buf = multiprocessing.sharedctypes.RawArray( ctypes.c_char, self._size)
+        self._buf = multiprocessing.sharedctypes.RawArray(ctypes.c_char, self._size)
         self._cv = multiprocessing.Condition()
 
     def put( self, value):
@@ -75,7 +77,7 @@ class SharedBuf():
             raise
 
 
-class sharedNumpyArray():
+class SharedNumpyArray():
     '''
     numpy array implemented with a multiprocessing.Array shared object,
     plus a Condition to implement multi-consumer wait-for-next-frame semantics
