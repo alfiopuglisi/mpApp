@@ -42,8 +42,8 @@ class MpProcess():
     def outpipe(self, dest):
         return getattr(self._manager, '%s_out'%dest).__call__()
 
-    def server( self):
-        while 1:
+    def server(self):
+        while True:
             msg = self._pipe_in.recv()
             tokens = msg.split()
             cmd = tokens[0]
@@ -51,7 +51,7 @@ class MpProcess():
             try:
                 retval = getattr(self, cmd).__call__(args)
             except AttributeError:
-                print( 'Unknown command '+cmd)
+                retval = '%s: Unknown command %s' % (self._name, cmd)
             print(retval)
             self._pipe_in.send(retval)
 

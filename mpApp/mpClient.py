@@ -2,14 +2,29 @@
 
 # Example client
 
-import mpManager
+from mpApp.mpManager import createClientManager
 
-class Client:
+class MpClient:
 
     def __init__(self, mpConfig):
-        manager = MpManager.createClientManager('localhost', mpConfig.PORT, mpConfig.AUTHKEY, mpConfig.data)
-        self.pxdata = manager.pixels()
-        self.rtc = manager.rtc()
+        self.manager = createClientManager(mpConfig.HOST,
+                                           mpConfig.PORT,
+                                           mpConfig.AUTHKEY,
+                                           mpConfig.data,
+                                           mpConfig.modules.keys())
+
+    def send(self, dest, msg):
+        outpipe = getattr(self.manager, '%s_out' % dest).__call__()
+        outpipe.send(msg)
+
+
+class _ExampleClient(MpClient):
+
+    def __init__(self, mpConfig):
+        super().__init__(mpConfig)
+
+        self.pxdata = self.manager.pixels()
+        self.rtc = self.manager.rtc()
 
     def pixels(self):
         return self.pxdata.get(True)
@@ -21,7 +36,7 @@ class Client:
 if __name__ == '__main__':
     # speedtest
 
-    client = Client()
+    client = _ExampleClient()
     while True:
         data = client.rtcdata()
         print(data.fcounter)
