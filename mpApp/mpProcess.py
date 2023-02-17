@@ -33,6 +33,9 @@ class MpProcess():
             print( 'Warning: no command input to process %s' % self._name )
         self.prepare()
 
+    def shared(self, name):
+        return self._shareddata[name]
+
     def sendTo(self, dest, msg):
         self.outpipe(dest).send(msg)
  
