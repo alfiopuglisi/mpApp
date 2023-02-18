@@ -12,10 +12,21 @@ class MpClient:
                                            mpConfig.AUTHKEY,
                                            mpConfig.data,
                                            mpConfig.modules.keys())
+        self._mpConfig = mpConfig
+        self._proxies = {}
 
     def send(self, dest, msg):
         outpipe = getattr(self.manager, '%s_out' % dest).__call__()
         outpipe.send(msg)
+
+    def proxy(self, name):
+
+        if name not in self._proxies:
+            if name not in self._mpConfig.data.keys():
+                raise KeyError(name)
+            self._proxies[name] = getattr(self.manager, name).__call__()
+
+        return self._proxies[name]
 
 
 class _ExampleClient(MpClient):
