@@ -79,6 +79,8 @@ class SharedBuf():
 
 class SharedNumpyArray():
     '''
+    TODO this class is not used anywhere. Delete?
+    
     numpy array implemented with a multiprocessing.Array shared object,
     plus a Condition to implement multi-consumer wait-for-next-frame semantics
     (similar to FLAO buflib).
