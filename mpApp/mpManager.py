@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-import time
 import multiprocessing
 import multiprocessing.managers
 from mpApp.mpTypes import SharedBuf
+
 
 def createMpManager(port, authkey, shareddata={}, pipes=[]):
     '''
@@ -15,23 +15,23 @@ def createMpManager(port, authkey, shareddata={}, pipes=[]):
     class MpManager(multiprocessing.managers.SyncManager):
         pass
 
-    aodata={}
-    pipes_in={}
-    pipes_out={}
+    aodata = {}
+    pipes_in = {}
+    pipes_out = {}
 
     # Use set() to remove duplicates
     for p in set(pipes):
-        print('Registering pipe: ',p)
+        print('Registering pipe: ', p)
         pipes_in[p], pipes_out[p] = multiprocessing.Pipe()
-        MpManager.register(p+'_in',  lambda v=pipes_in[p]: v)
+        MpManager.register(p+'_in', lambda v=pipes_in[p]: v)
         MpManager.register(p+'_out', lambda v=pipes_out[p]: v)
 
-    for k,v in shareddata.items():
-        print('Registering new array: ',k,v)
-        aodata[k]= SharedBuf(v)
+    for k, v in shareddata.items():
+        print('Registering new array: ', k, v)
+        aodata[k] = SharedBuf(v)
         MpManager.register(k, lambda v=aodata[k]: v)   # Use default lambda value to bind
 
-    manager = MpManager(address=('',port), authkey=authkey)
+    manager = MpManager(address=('', port), authkey=authkey)
     manager.start()
     print('MpManager started on port %d' % port)
     return manager
@@ -44,8 +44,8 @@ def createClientManager(remote_host, port, authkey, shareddata={}, pipes=[]):
     class MpClientManager(multiprocessing.managers.SyncManager):
         pass
 
-    for k,v in shareddata.items():
-        MpClientManager.register( k)
+    for k, v in shareddata.items():
+        MpClientManager.register(k)
 
     # Use set() to remove duplicates
     for p in set(pipes):
@@ -55,6 +55,7 @@ def createClientManager(remote_host, port, authkey, shareddata={}, pipes=[]):
     manager = MpClientManager(address=(remote_host, port), authkey=authkey)
     manager.connect()
 
-    print( 'MpClientManager connected to %s:%d' % (remote_host, port))
+    print('MpClientManager connected to %s:%d' % (remote_host, port))
     return manager
 
+# ___oOo___
