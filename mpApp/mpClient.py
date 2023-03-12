@@ -4,6 +4,7 @@
 
 from mpApp.mpManager import createClientManager
 
+
 class MpClient:
 
     def __init__(self, mpConfig):
@@ -52,3 +53,5 @@ if __name__ == '__main__':
         data = client.rtcdata()
         print(data.fcounter)
         print(data.calibpixels)
+
+# ___oOo___

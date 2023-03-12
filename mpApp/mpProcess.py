@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import mpApp.mpManager
+from mpApp import mpManager
+
 
 class MpProcess():
     '''
@@ -27,10 +28,10 @@ class MpProcess():
         for k in self._mpConfig.data.keys():
             self._shareddata[k] = getattr(self._manager, k).__call__()
         try:
-            self._pipe_in  = getattr(self._manager, '%s_in'%self._name).__call__()
-            self._pipe_out = getattr(self._manager, '%s_out'%self._name).__call__()
+            self._pipe_in  = getattr(self._manager, '%s_in' % self._name).__call__()
+            self._pipe_out = getattr(self._manager, '%s_out' % self._name).__call__()
         except AttributeError:
-            print( 'Warning: no command input to process %s' % self._name )
+            print('Warning: no command input to process %s' % self._name)
         self.prepare()
 
     def proxy(self, name):
@@ -38,9 +39,9 @@ class MpProcess():
 
     def sendTo(self, dest, msg):
         self.outpipe(dest).send(msg)
- 
+
     def outpipe(self, dest):
-        return getattr(self._manager, '%s_out'%dest).__call__()
+        return getattr(self._manager, '%s_out' % dest).__call__()
 
     def server(self):
         while True:
@@ -58,5 +59,7 @@ class MpProcess():
     def prepare(self):
         pass
 
-    def run( self):
+    def run(self):
         pass
+
+# ___oOo___

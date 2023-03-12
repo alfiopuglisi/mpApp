@@ -27,8 +27,10 @@ class MpMain():
             queues.append(name)
 
         # Start main manager
-
-        manager = mpManager.createMpManager(self._mpConfig.PORT, self._mpConfig.AUTHKEY, self._mpConfig.data, queues)
+        manager = mpManager.createMpManager(self._mpConfig.PORT,
+                                            self._mpConfig.AUTHKEY,
+                                            self._mpConfig.data,
+                                            queues)
 
         # Prepare all processes
         for p in processes:
@@ -37,8 +39,8 @@ class MpMain():
         # Launch everything
         self.allprocs = []
         for p in processes:
-            a = multiprocessing.Process(target = p.run)
-            b = multiprocessing.Process(target = p.server)
+            a = multiprocessing.Process(target=p.run)
+            b = multiprocessing.Process(target=p.server)
             a.start()
             b.start()
             self.allprocs.append(a)
@@ -53,4 +55,3 @@ class MpMain():
         sys.exit(0)
 
 # ___oOo___
-
