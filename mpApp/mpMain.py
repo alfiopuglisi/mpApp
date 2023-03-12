@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import sys
 import time
+import signal
 from mpApp import mpManager
 import multiprocessing
 
@@ -9,6 +11,7 @@ class MpMain():
 
     def __init__(self, mpConfig):
         self._mpConfig = mpConfig
+        signal.signal(signal.SIGTERM, self.exit)
 
     def run(self):
 
@@ -32,14 +35,22 @@ class MpMain():
             p.create(manager=manager)
 
         # Launch everything
+        self.allprocs = []
         for p in processes:
-
             a = multiprocessing.Process(target = p.run)
             b = multiprocessing.Process(target = p.server)
             a.start()
             b.start()
+            self.allprocs.append(a)
+            self.allprocs.append(b)
 
-        while 1:
+        while True:
             time.sleep(1)
 
+    def exit(self, *args):
+        for p in self.allprocs:
+            p.terminate()
+        sys.exit(0)
+
+# ___oOo___
 
